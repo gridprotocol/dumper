@@ -41,7 +41,9 @@ func getEndpointByChain(chain string) string {
 		return eth.Ganache
 	case "dev":
 		//return "https://devchain.metamemo.one:8501"
-		return eth.DevChain
+		//return eth.DevChain
+		return "http://10.10.100.82:8201"
+
 		// case "test":
 		// 	return "https://testchain.metamemo.one:24180"
 		// case "product":
