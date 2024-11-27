@@ -15,6 +15,7 @@ type Profit struct {
 	Penalty  *big.Int  // 惩罚值
 	LastTime time.Time // 上次更新时间
 	EndTime  time.Time // 可以取出全部分润值时间
+	Nonce    uint64
 }
 
 type ProfitStore struct {
