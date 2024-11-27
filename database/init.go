@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/gridprotocol/platform-v2/logs"
+	"github.com/gridprotocol/dumper/logs"
 
 	// "gorm.io/driver/mysql"
 

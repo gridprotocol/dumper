@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gridprotocol/platform-v2/database"
-	"github.com/gridprotocol/platform-v2/logs"
+	"github.com/gridprotocol/dumper/database"
+	"github.com/gridprotocol/dumper/logs"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"

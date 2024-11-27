@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/gridprotocol/platform-v2/database"
+	"github.com/gridprotocol/dumper/database"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
