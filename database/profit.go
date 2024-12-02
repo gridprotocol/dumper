@@ -32,7 +32,7 @@ func InitProfit() error {
 }
 
 func (p *Profit) CreateProfit() error {
-	profit := &ProfitStore{
+	ps := &ProfitStore{
 		Address:  p.Address,
 		Balance:  p.Balance.String(),
 		Profit:   p.Profit.String(),
@@ -40,11 +40,11 @@ func (p *Profit) CreateProfit() error {
 		LastTime: p.LastTime,
 		EndTime:  p.EndTime,
 	}
-	return GlobalDataBase.Create(profit).Error
+	return GlobalDataBase.Create(ps).Error
 }
 
 func (p *Profit) UpdateProfit() error {
-	profit := &ProfitStore{
+	ps := &ProfitStore{
 		Address:  p.Address,
 		Balance:  p.Balance.String(),
 		Profit:   p.Profit.String(),
@@ -52,35 +52,36 @@ func (p *Profit) UpdateProfit() error {
 		LastTime: p.LastTime,
 		EndTime:  p.EndTime,
 	}
-	return GlobalDataBase.Model(&ProfitStore{}).Where("address = ?", p.Address).Save(profit).Error
+
+	return GlobalDataBase.Model(&ProfitStore{}).Where("address = ?", p.Address).Save(ps).Error
 }
 
 func GetProfitByAddress(address string) (Profit, error) {
-	var profitStore ProfitStore
-	err := GlobalDataBase.Model(&ProfitStore{}).Where("address = ?", address).First(&profitStore).Error
+	var ps ProfitStore
+	err := GlobalDataBase.Model(&ProfitStore{}).Where("address = ?", address).First(&ps).Error
 	if err != nil {
 		return Profit{}, err
 	}
 
 	var profit = Profit{
-		Address:  profitStore.Address,
-		LastTime: profitStore.LastTime,
-		EndTime:  profitStore.EndTime,
+		Address:  ps.Address,
+		LastTime: ps.LastTime,
+		EndTime:  ps.EndTime,
 	}
 
-	_, ok := profit.Balance.SetString(profitStore.Balance, 10)
+	_, ok := profit.Balance.SetString(ps.Balance, 10)
 	if !ok {
-		return Profit{}, xerrors.Errorf("Balance %s is not in decimal format", profitStore.Balance)
+		return Profit{}, xerrors.Errorf("Balance %s is not in decimal format", ps.Balance)
 	}
 
-	_, ok = profit.Profit.SetString(profitStore.Profit, 10)
+	_, ok = profit.Profit.SetString(ps.Profit, 10)
 	if !ok {
-		return Profit{}, xerrors.Errorf("Profit %s is not in decimal format", profitStore.Profit)
+		return Profit{}, xerrors.Errorf("Profit %s is not in decimal format", ps.Profit)
 	}
 
-	_, ok = profit.Penalty.SetString(profitStore.Penalty, 10)
+	_, ok = profit.Penalty.SetString(ps.Penalty, 10)
 	if !ok {
-		return Profit{}, xerrors.Errorf("Penalty %s is not in decimal format", profitStore.Penalty)
+		return Profit{}, xerrors.Errorf("Penalty %s is not in decimal format", ps.Penalty)
 	}
 
 	return profit, nil

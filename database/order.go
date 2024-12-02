@@ -54,7 +54,7 @@ func GetOrdersByUser(user string) ([]Order, error) {
 // get orders count by provider address
 func GetOrderCount(address string) (int64, error) {
 	var cnt int64
-	err := GlobalDataBase.Model(&Order{}).Where("address = ?", address).Count(&cnt).Error
+	err := GlobalDataBase.Model(&Order{}).Where("provider = ?", address).Count(&cnt).Error
 	if err != nil {
 		return -1, err
 	}
