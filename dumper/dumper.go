@@ -14,8 +14,6 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-
-	"github.com/grid/contracts/eth"
 )
 
 var (
@@ -35,30 +33,11 @@ type Dumper struct {
 	indexedMap   map[common.Hash]abi.Arguments
 }
 
-func getEndpointByChain(chain string) string {
-	switch chain {
-	case "local":
-		return eth.Ganache
-	case "dev":
-		//return "https://devchain.metamemo.one:8501"
-		//return eth.DevChain
-		return "http://10.10.100.82:8201"
-
-		// case "test":
-		// 	return "https://testchain.metamemo.one:24180"
-		// case "product":
-		// 	return "https://chain.metamemo.one:8501"
-		// case "goerli":
-		// 	return "https://eth-goerli.g.alchemy.com/v2/Bn3AbuwyuTWanFLJiflS-dc23r1Re_Af"
-	}
-	return "https://devchain.metamemo.one:8501"
-}
-
 // init a dumper with chain selected: local/dev
-func NewGRIDDumper(chain string, registerAddress, marketAddress common.Address) (dumper *Dumper, err error) {
+func NewGRIDDumper(chain_ep string, registerAddress, marketAddress common.Address) (dumper *Dumper, err error) {
 	dumper = &Dumper{
 		// store:        store,
-		endpoint:     getEndpointByChain(chain),
+		endpoint:     chain_ep,
 		eventNameMap: make(map[common.Hash]string),
 		indexedMap:   make(map[common.Hash]abi.Arguments),
 	}
