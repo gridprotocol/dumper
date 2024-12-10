@@ -78,12 +78,12 @@ func NewGRIDDumper(chain_ep string, registerAddress, marketAddress common.Addres
 	}
 
 	// get block number from db
-	logger.Info("getting block number from db")
+	logger.Debug("getting block number from db")
 	blockNumber, err := database.GetBlockNumber()
 	if err != nil {
 		blockNumber = 0
 	}
-	logger.Info("block number: ", blockNumber)
+	logger.Debug("block number: ", blockNumber)
 
 	// set block number for dumper
 	dumper.fromBlock = big.NewInt(blockNumber)
@@ -122,11 +122,11 @@ func (d *Dumper) DumpGRID() error {
 
 	// if no new chain block, return
 	if d.fromBlock.Cmp(new(big.Int).SetUint64(chainBlock)) > 0 {
-		logger.Info("no new chain block, waiting..")
+		logger.Debug("no new chain block, waiting..")
 		return nil
 	}
 
-	logger.Info("dump from block: ", d.fromBlock)
+	logger.Debug("dump from block: ", d.fromBlock)
 
 	// filter event logs from block
 	events, err := client.FilterLogs(context.TODO(), ethereum.FilterQuery{
@@ -151,19 +151,19 @@ func (d *Dumper) DumpGRID() error {
 
 		switch eventName {
 		case "Register":
-			logger.Info("==== Handle Register Event")
+			logger.Debug("==== Handle Register Event")
 			err = d.HandleRegister(event)
 			if err != nil {
 				logger.Debug("handle register error: ", err.Error())
 			}
 		case "AddNode":
-			logger.Info("==== Handle Add Node Event")
+			logger.Debug("==== Handle Add Node Event")
 			err = d.HandleAddNode(event)
 			if err != nil {
 				logger.Debug("handle addNode error: ", err.Error())
 			}
 		case "CreateOrder":
-			logger.Info("==== Handle Create Order Event")
+			logger.Debug("==== Handle Create Order Event")
 			tx, _, err := client.TransactionByHash(context.TODO(), event.TxHash)
 			if err != nil {
 				logger.Debug("handle create order error: ", err.Error())
@@ -206,27 +206,27 @@ func (d *Dumper) unpack(log types.Log, ABI abi.ABI, out interface{}) error {
 	// get all topics
 	indexed := d.indexedMap[log.Topics[0]]
 
-	logger.Infof("log data: %x", log.Data)
-	logger.Info("log topics: ", log.Topics)
+	logger.Debug("log data: %x", log.Data)
+	logger.Debug("log topics: ", log.Topics)
 
 	// logger.Info("event name: ", eventName)
-	logger.Info("topics in map: ", indexed)
+	logger.Debug("topics in map: ", indexed)
 
 	// parse data
-	logger.Info("parse data, event name: ", eventName)
+	logger.Debug("parse data, event name: ", eventName)
 	err := ABI.UnpackIntoInterface(out, eventName, log.Data)
 	if err != nil {
 		return err
 	}
-	logger.Info("unpack out(no topics):", out)
+	logger.Debug("unpack out(no topics):", out)
 
 	// parse topic
-	logger.Info("parse topic")
+	logger.Debug("parse topic")
 	err = abi.ParseTopics(out, indexed, log.Topics[1:])
 	if err != nil {
 		return err
 	}
-	logger.Info("unpack out(with topics):", out)
+	logger.Debug("unpack out(with topics):", out)
 
 	return nil
 }
