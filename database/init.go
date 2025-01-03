@@ -27,7 +27,7 @@ func InitDatabase(path string) error {
 	if err != nil {
 		return err
 	}
-	logger.Info("db path: ", dir)
+	logger.Info("dumper db path: ", dir)
 
 	// if dir not exist, make it
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
@@ -45,7 +45,7 @@ func InitDatabase(path string) error {
 	// }
 
 	// open gorm db
-	db, err := gorm.Open(sqlite.Open(filepath.Join(dir, "grid.db")), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(filepath.Join(dir, "dumper.db")), &gorm.Config{})
 	if err != nil {
 		return err
 	}

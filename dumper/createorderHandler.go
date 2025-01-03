@@ -49,5 +49,51 @@ func (d *Dumper) HandleCreateOrder(log types.Log, from common.Address) error {
 		return err
 	}
 
-	return nil
+	// get node info from db
+	nodeInfo, err := database.GetNodeByCpAndId(orderInfo.Provider, orderInfo.Id)
+	if err != nil {
+		return err
+	}
+
+	// get profit info
+	profitInfo, err := database.GetProfitByAddress(orderInfo.Provider)
+	if err != nil {
+		return err
+	}
+
+	// init profit info
+	// (cpuPrice + gpuPrice + memPrice + diskPrice) * duration
+	price := new(big.Int).Add(nodeInfo.CPUPrice, nodeInfo.GPUPrice)
+	price.Add(price, nodeInfo.MemPrice)
+	price.Add(price, nodeInfo.DiskPrice)
+	price.Mul(price, big.NewInt(orderInfo.Duration))
+
+	profitInfo.Profit.Add(profitInfo.Profit, price)
+	if orderInfo.EndTime.Compare(profitInfo.EndTime) == 1 {
+		profitInfo.EndTime = orderInfo.EndTime
+	}
+
+	return profitInfo.UpdateProfit()
+}
+
+type WithdrawEvent struct {
+	Cp     common.Address
+	Amount *big.Int
+}
+
+func (d *Dumper) HandleWithdraw(log types.Log) error {
+	var out WithdrawEvent
+	err := d.unpack(log, d.contractABI[1], &out)
+	if err != nil {
+		return err
+	}
+
+	profit, err := database.GetProfitByAddress(out.Cp.Hex())
+	if err != nil {
+		return err
+	}
+
+	profit.Balance.Sub(profit.Balance, out.Amount)
+	profit.Nonce++
+	return profit.UpdateProfit()
 }
