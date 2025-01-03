@@ -90,7 +90,7 @@ func GetProfitByAddress(address string) (Profit, error) {
 var blockNumberKey = "block_number_key"
 
 type BlockNumber struct {
-	BlockNumberKey string `gorm:"primarykey;column:key"`
+	BlockNumberKey string `gorm:"primarykey;column:block_number_key"`
 	BlockNumber    int64
 }
 

@@ -83,7 +83,7 @@ func RemoveDataBase(path string) error {
 		return err
 	}
 
-	databasePath := filepath.Join(dir, "grid.db")
+	databasePath := filepath.Join(dir, "dumper.db")
 	if _, err := os.Stat(databasePath); os.IsExist(err) {
 		if err := os.Remove(databasePath); err != nil {
 			return err
