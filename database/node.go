@@ -64,6 +64,18 @@ func GetNodeByCpAndId(cp string, id uint64) (Node, error) {
 	return NodeStoreToNode(nodeStore)
 }
 
+// list all node by specify start and num of node
+func ListAllNodes(start, num int) ([]NodeStore, error) {
+	var nodeStores []NodeStore
+
+	err := GlobalDataBase.Model(&NodeStore{}).Limit(num).Offset(start).Find(&nodeStores).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return nodeStores, nil
+}
+
 // get node list of a cp
 func ListAllNodesByCp(cp string) ([]NodeStore, error) {
 	var nodeStores []NodeStore
@@ -75,9 +87,26 @@ func ListAllNodesByCp(cp string) ([]NodeStore, error) {
 	return nodeStores, nil
 }
 
-func ListAllNodes() ([]NodeStore, error) {
+// ListAllNodesByUser 通过用户地址查询与之相关的所有节点列表
+func ListAllNodesByUser(user string) ([]NodeStore, error) {
 	var nodeStores []NodeStore
-	err := GlobalDataBase.Model(&NodeStore{}).Find(&nodeStores).Error
+	var orders []Order
+
+	// 首先查询 orders 表，获取所有与用户相关的订单
+	err := GlobalDataBase.Where("user = ?", user).Find(&orders).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// 然后根据 orders 表中的 provider 和 nid 查询 node_stores 表中的节点信息
+	var providers []string
+	var nids []int
+	for _, order := range orders {
+		providers = append(providers, order.Provider)
+		nids = append(nids, int(order.Nid))
+	}
+
+	err = GlobalDataBase.Model(&NodeStore{}).Where("address IN (?) AND id IN (?)", providers, nids).Find(&nodeStores).Error
 	if err != nil {
 		return nil, err
 	}

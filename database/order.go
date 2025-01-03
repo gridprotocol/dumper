@@ -73,6 +73,18 @@ func ListAllActivedOrder() ([]Order, error) {
 	return orders, nil
 }
 
+// user's orders
+func ListAllOrderByUser(address string) ([]Order, error) {
+	var orders []Order
+	err := GlobalDataBase.Model(&Order{}).Where("user = ?", address).Find(&orders).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return orders, nil
+}
+
+// user's active orders
 func ListAllActivedOrderByUser(address string) ([]Order, error) {
 	var now = time.Now()
 	var orders []Order
