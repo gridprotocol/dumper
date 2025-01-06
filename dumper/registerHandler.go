@@ -1,6 +1,9 @@
 package dumper
 
 import (
+	"math/big"
+	"time"
+
 	"github.com/gridprotocol/dumper/database"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -41,16 +44,14 @@ func (d *Dumper) HandleRegister(log types.Log) error {
 		return err
 	}
 
-	return nil
-
-	// now := time.Now()
-	// profitInfo := database.Profit{
-	// 	Address:  out.Cp.Hex(),
-	// 	Balance:  big.NewInt(0),
-	// 	Profit:   big.NewInt(0),
-	// 	Penalty:  big.NewInt(0),
-	// 	LastTime: now,
-	// 	EndTime:  now,
-	// }
-	// return profitInfo.CreateProfit()
+	now := time.Now()
+	profitInfo := database.Profit{
+		Address:  out.Cp.Hex(),
+		Balance:  big.NewInt(0),
+		Profit:   big.NewInt(0),
+		Penalty:  big.NewInt(0),
+		LastTime: now,
+		EndTime:  now,
+	}
+	return profitInfo.CreateProfit()
 }

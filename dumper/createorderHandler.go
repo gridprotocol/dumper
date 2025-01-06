@@ -68,11 +68,13 @@ func (d *Dumper) HandleCreateOrder(log types.Log, from common.Address) error {
 	price.Add(price, nodeInfo.DiskPrice)
 	price.Mul(price, big.NewInt(orderInfo.Duration))
 
+	// update profit
 	profitInfo.Profit.Add(profitInfo.Profit, price)
 	if orderInfo.EndTime.Compare(profitInfo.EndTime) == 1 {
 		profitInfo.EndTime = orderInfo.EndTime
 	}
 
+	// store new value
 	return profitInfo.UpdateProfit()
 }
 

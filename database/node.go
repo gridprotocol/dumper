@@ -12,6 +12,7 @@ type Node struct {
 
 	CPUPrice *big.Int
 	CPUModel string
+	CPUCore  uint64
 
 	GPUPrice *big.Int
 	GPUModel string
@@ -21,6 +22,12 @@ type Node struct {
 
 	DiskPrice    *big.Int
 	DiskCapacity int64
+
+	Exist bool
+	Sold  bool
+	Avail bool
+
+	Online bool
 }
 
 type NodeStore struct {
@@ -29,6 +36,7 @@ type NodeStore struct {
 
 	CPUPrice string
 	CPUModel string
+	CPUCore  int64
 
 	GPUPrice string
 	GPUModel string
@@ -38,6 +46,12 @@ type NodeStore struct {
 
 	DiskPrice    string
 	DiskCapacity int64
+
+	Exist bool
+	Sold  bool
+	Avail bool
+
+	Online bool
 }
 
 func InitNode() error {
@@ -79,6 +93,7 @@ func ListAllNodes(start, num int) ([]NodeStore, error) {
 // get node list of a cp
 func ListAllNodesByCp(cp string) ([]NodeStore, error) {
 	var nodeStores []NodeStore
+
 	err := GlobalDataBase.Model(&NodeStore{}).Where("address = ?", cp).Find(&nodeStores).Error
 	if err != nil {
 		return nil, err
@@ -114,6 +129,50 @@ func ListAllNodesByUser(user string) ([]NodeStore, error) {
 	return nodeStores, nil
 }
 
+// set node exist
+func SetExist(cp string, id uint64, set bool) error {
+	// 更新 node_stores 表中相应节点的 exist 字段
+	err := GlobalDataBase.Model(&NodeStore{}).Where("address = ? AND id = ?", cp, id).Update("exist", set).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// set node sold
+func SetSold(cp string, id uint64, set bool) error {
+	// 更新 node_stores 表中相应节点的 sold 字段
+	err := GlobalDataBase.Model(&NodeStore{}).Where("address = ? AND id = ?", cp, id).Update("sold", set).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// set node avail
+func SetAvail(cp string, id uint64, set bool) error {
+	// 更新 node_stores 表中相应节点的 avail 字段
+	err := GlobalDataBase.Model(&NodeStore{}).Where("address = ? AND id = ?", cp, id).Update("avail", set).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// set node online
+func SetOnline(cp string, id uint64, set bool) error {
+	// 更新 node_stores 表中相应节点的 online 字段
+	err := GlobalDataBase.Model(&NodeStore{}).Where("address = ? AND id = ?", cp, id).Update("online", set).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func NodeToNodeStore(node Node) (NodeStore, error) {
 	return NodeStore{
 		Address: node.Address,
@@ -130,6 +189,10 @@ func NodeToNodeStore(node Node) (NodeStore, error) {
 
 		DiskPrice:    node.DiskPrice.String(),
 		DiskCapacity: node.DiskCapacity,
+
+		Exist: node.Exist,
+		Sold:  node.Sold,
+		Avail: node.Avail,
 	}, nil
 }
 

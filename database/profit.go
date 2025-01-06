@@ -64,6 +64,9 @@ func GetProfitByAddress(address string) (Profit, error) {
 	}
 
 	var profit = Profit{
+		Balance:  big.NewInt(0),
+		Profit:   big.NewInt(0),
+		Penalty:  big.NewInt(0),
 		Address:  ps.Address,
 		LastTime: ps.LastTime,
 		EndTime:  ps.EndTime,

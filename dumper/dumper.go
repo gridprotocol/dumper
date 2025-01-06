@@ -107,6 +107,7 @@ func (d *Dumper) SubscribeGRID(ctx context.Context) {
 // dump all events of blocks into db
 func (d *Dumper) DumpGRID() error {
 	// dial chain
+	logger.Info("connect chain")
 	client, err := ethclient.DialContext(context.TODO(), d.endpoint)
 	if err != nil {
 		logger.Debug(err.Error())
@@ -115,8 +116,10 @@ func (d *Dumper) DumpGRID() error {
 	defer client.Close()
 
 	// get current chain block number
+	logger.Info("get block number from chain")
 	chainBlock, err := client.BlockNumber(context.Background())
 	if err != nil {
+		logger.Debug("get block number error:", err)
 		return err
 	}
 
@@ -206,27 +209,27 @@ func (d *Dumper) unpack(log types.Log, ABI abi.ABI, out interface{}) error {
 	// get all topics
 	indexed := d.indexedMap[log.Topics[0]]
 
-	logger.Debug("log data: %x", log.Data)
-	logger.Debug("log topics: ", log.Topics)
+	//logger.Debug("log data: %x", log.Data)
+	//logger.Debug("log topics: ", log.Topics)
 
 	// logger.Info("event name: ", eventName)
-	logger.Debug("topics in map: ", indexed)
+	//logger.Debug("topics in map: ", indexed)
 
 	// parse data
-	logger.Debug("parse data, event name: ", eventName)
+	//logger.Debug("parse data, event name: ", eventName)
 	err := ABI.UnpackIntoInterface(out, eventName, log.Data)
 	if err != nil {
 		return err
 	}
-	logger.Debug("unpack out(no topics):", out)
+	//logger.Debug("unpack out(no topics):", out)
 
 	// parse topic
-	logger.Debug("parse topic")
+	//logger.Debug("parse topic")
 	err = abi.ParseTopics(out, indexed, log.Topics[1:])
 	if err != nil {
 		return err
 	}
-	logger.Debug("unpack out(with topics):", out)
+	//logger.Debug("unpack out(with topics):", out)
 
 	return nil
 }
