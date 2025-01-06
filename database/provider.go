@@ -38,9 +38,10 @@ type NodeInProvider struct {
 	MEM  MEM    `json:"mem"`
 	DISK DISK   `json:"disk"`
 
-	Exist bool `json:"exist"`
-	Sold  bool `json:"sold"`
-	Avail bool `json:"avail"`
+	Exist  bool `json:"exist"`
+	Sold   bool `json:"sold"`
+	Avail  bool `json:"avail"`
+	Online bool `json:"online"`
 }
 
 type ProviderWithNodes struct {
@@ -125,9 +126,10 @@ func ListAllProviders(start int, num int) ([]ProviderWithNodes, error) {
 					Num:      n.DiskCapacity,
 				},
 
-				Exist: n.Exist,
-				Sold:  n.Sold,
-				Avail: n.Avail,
+				Exist:  n.Exist,
+				Sold:   n.Sold,
+				Avail:  n.Avail,
+				Online: n.Online,
 			}
 
 			nodes_in = append(nodes_in, node_in)
