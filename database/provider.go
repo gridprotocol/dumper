@@ -70,14 +70,78 @@ func (p *Provider) CreateProvider() error {
 	return GlobalDataBase.Create(p).Error
 }
 
-func GetProviderByAddress(address string) (Provider, error) {
+// get cp info
+func GetProviderByAddress(address string) (ProviderAdaptor, error) {
 	var provider Provider
+
+	// load provider
 	err := GlobalDataBase.Model(&Provider{}).Where("address = ?", address).First(&provider).Error
 	if err != nil {
-		return Provider{}, err
+		return ProviderAdaptor{}, err
 	}
 
-	return provider, nil
+	// adapt provider
+	var nodes []NodeStore
+	// load nodes
+	err = GlobalDataBase.Where("address = ?", provider.Address).Find(&nodes).Error
+	if err != nil {
+		return ProviderAdaptor{}, err
+	}
+
+	var nodes_in []NodeAdaptor
+	// 适配node到nodeInProvider
+	for _, n := range nodes {
+		// compatible node to node_in
+		node_in := NodeAdaptor{
+			ID: n.Id,
+			CP: n.Address,
+
+			CPU: CPU{
+				PriceMon: n.CPUPrice,
+				Model:    n.CPUModel,
+				Core:     n.CPUCore,
+			},
+			GPU: GPU{
+				PriceMon: n.GPUPrice,
+				Model:    n.GPUModel,
+			},
+			MEM: MEM{
+				PriceMon: n.MemPrice,
+				Num:      n.MemCapacity,
+			},
+			DISK: DISK{
+				PriceMon: n.DiskPrice,
+				Num:      n.DiskCapacity,
+			},
+
+			Exist:  n.Exist,
+			Sold:   n.Sold,
+			Avail:  n.Avail,
+			Online: n.Online,
+		}
+
+		nodes_in = append(nodes_in, node_in)
+	}
+
+	// 将Provider和其Node列表添加到新的数据结构中
+	providerAdp := ProviderAdaptor{
+		Address: provider.Address,
+		Name:    provider.Name,
+		IP:      provider.IP,
+		Domain:  provider.Domain,
+		Port:    provider.Port,
+
+		NNode: 0,
+		UNode: 0,
+		NMem:  0,
+		UMem:  0,
+		NDisk: 0,
+		UDisk: 0,
+
+		Nodes: nodes_in,
+	}
+
+	return providerAdp, nil
 }
 
 // list all providers with nodes

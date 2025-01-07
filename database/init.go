@@ -69,8 +69,34 @@ func InitDatabase(path string) error {
 		return err
 	}
 
-	db.AutoMigrate(&Order{}, &ProfitStore{}, &BlockNumber{}, &Provider{}, &NodeStore{})
+	// create all tables
+	db.AutoMigrate(&Order{}, &ProfitStore{}, &BlockNumber{}, &Provider{}, &NodeStore{}, &GlobalStore{})
 	GlobalDataBase = db
+
+	// insert a record for global
+	initialData := GlobalStore{
+		Id:         0,
+		CpNum:      0,
+		NodeGlobal: 0,
+		NodeUsed:   0,
+		MemGlobal:  0,
+		DiskGlobal: 0,
+		MemUsed:    0,
+		DiskUsed:   0,
+	}
+	// 尝试查找记录
+	var existingData GlobalStore
+	err = GlobalDataBase.First(&existingData, initialData.Id).Error
+	if err == gorm.ErrRecordNotFound {
+		// 记录不存在，插入新记录
+		err = GlobalDataBase.Create(&initialData).Error
+		if err != nil {
+			panic("failed to insert initial data")
+		}
+	} else if err != nil {
+		// 其他错误
+		panic("failed to check for existing data")
+	}
 
 	logger.Info("init database success")
 
