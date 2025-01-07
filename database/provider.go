@@ -30,7 +30,7 @@ type DISK struct {
 	PriceSec string `json:"priceSec"`
 	Num      int64  `json:"num"`
 }
-type NodeInProvider struct {
+type NodeAdaptor struct {
 	ID   uint64 `json:"id"`
 	CP   string `json:"cp"`
 	CPU  CPU    `json:"cpu"`
@@ -44,7 +44,7 @@ type NodeInProvider struct {
 	Online bool `json:"online"`
 }
 
-type ProviderWithNodes struct {
+type ProviderAdaptor struct {
 	Address string `gorm:"primarykey" json:"address"`
 	Name    string `json:"name"`
 	IP      string `json:"ip"`
@@ -58,7 +58,7 @@ type ProviderWithNodes struct {
 	NDisk uint64 `json:"nDisk"`
 	UDisk uint64 `json:"uDisk"`
 
-	Nodes []NodeInProvider `json:"nodes"`
+	Nodes []NodeAdaptor `json:"nodes"`
 }
 
 func InitProvider() error {
@@ -81,9 +81,9 @@ func GetProviderByAddress(address string) (Provider, error) {
 }
 
 // list all providers with nodes
-func ListAllProviders(start int, num int) ([]ProviderWithNodes, error) {
+func ListAllProviders(start int, num int) ([]ProviderAdaptor, error) {
 	var providers []Provider
-	var providersWithNodes []ProviderWithNodes
+	var providersWithNodes []ProviderAdaptor
 
 	// 获取Provider列表
 	err := GlobalDataBase.Model(&Provider{}).Limit(num).Offset(start).Find(&providers).Error
@@ -100,11 +100,11 @@ func ListAllProviders(start int, num int) ([]ProviderWithNodes, error) {
 			return nil, err
 		}
 
-		var nodes_in []NodeInProvider
+		var nodes_in []NodeAdaptor
 		// 适配node到nodeInProvider
 		for _, n := range nodes {
 			// compatible node to node_in
-			node_in := NodeInProvider{
+			node_in := NodeAdaptor{
 				ID: n.Id,
 				CP: n.Address,
 
@@ -136,7 +136,7 @@ func ListAllProviders(start int, num int) ([]ProviderWithNodes, error) {
 		}
 
 		// 将Provider和其Node列表添加到新的数据结构中
-		providersWithNodes = append(providersWithNodes, ProviderWithNodes{
+		providersWithNodes = append(providersWithNodes, ProviderAdaptor{
 			Address: provider.Address,
 			Name:    provider.Name,
 			IP:      provider.IP,

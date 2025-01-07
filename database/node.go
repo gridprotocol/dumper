@@ -103,8 +103,8 @@ func ListAllNodesByCp(cp string) ([]NodeStore, error) {
 }
 
 // ListAllNodesByUser 通过用户地址查询与之相关的所有节点列表
-func ListAllNodesByUser(user string) ([]NodeStore, error) {
-	var nodeStores []NodeStore
+func ListAllNodesByUser(user string) ([]NodeAdaptor, error) {
+	var nodes []NodeStore
 	var orders []Order
 
 	// 首先查询 orders 表，获取所有与用户相关的订单
@@ -121,12 +121,47 @@ func ListAllNodesByUser(user string) ([]NodeStore, error) {
 		nids = append(nids, int(order.Nid))
 	}
 
-	err = GlobalDataBase.Model(&NodeStore{}).Where("address IN (?) AND id IN (?)", providers, nids).Find(&nodeStores).Error
+	err = GlobalDataBase.Model(&NodeStore{}).Where("address IN (?) AND id IN (?)", providers, nids).Find(&nodes).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return nodeStores, nil
+	var nodeAdps []NodeAdaptor
+	// 适配node到nodeInProvider
+	for _, n := range nodes {
+		// compatible node to node_in
+		node := NodeAdaptor{
+			ID: n.Id,
+			CP: n.Address,
+
+			CPU: CPU{
+				PriceMon: n.CPUPrice,
+				Model:    n.CPUModel,
+				Core:     n.CPUCore,
+			},
+			GPU: GPU{
+				PriceMon: n.GPUPrice,
+				Model:    n.GPUModel,
+			},
+			MEM: MEM{
+				PriceMon: n.MemPrice,
+				Num:      n.MemCapacity,
+			},
+			DISK: DISK{
+				PriceMon: n.DiskPrice,
+				Num:      n.DiskCapacity,
+			},
+
+			Exist:  n.Exist,
+			Sold:   n.Sold,
+			Avail:  n.Avail,
+			Online: n.Online,
+		}
+
+		nodeAdps = append(nodeAdps, node)
+	}
+
+	return nodeAdps, nil
 }
 
 // set node exist

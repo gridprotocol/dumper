@@ -15,6 +15,7 @@ type Order struct {
 	EndTime      time.Time `gorm:"column:end"`
 	Probation    int64
 	Duration     int64
+	Status       int64
 }
 
 func InitOrder() error {
@@ -73,15 +74,51 @@ func ListAllActivedOrder() ([]Order, error) {
 	return orders, nil
 }
 
+type OrderAdaptor struct {
+	ID         uint64 `json:"id"`
+	User       string `json:"user"`
+	Provider   string `json:"provider"`
+	Nid        uint64 `json:"node_id"`
+	AppName    string `json:"appName"`
+	Remain     string `json:"remain"`
+	Remu       string `json:"remuneration"`
+	ActiveTime string `json:"activeTime"`
+	LastSettle string `json:"lastSettleTime"`
+	Probation  int64  `json:"probation"`
+	Duration   int64  `json:"duration"`
+	// 0-not exist 1-unactive 2-active 3-cancelled 4-completed
+	Status int64 `json:"status"`
+}
+
 // user's orders
-func ListAllOrderByUser(address string) ([]Order, error) {
+func ListAllOrderByUser(address string) ([]OrderAdaptor, error) {
 	var orders []Order
+	var ordersAdaptor []OrderAdaptor
+
 	err := GlobalDataBase.Model(&Order{}).Where("user = ?", address).Find(&orders).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return orders, nil
+	for _, o := range orders {
+		adp := OrderAdaptor{
+			ID:         o.Id,
+			User:       o.User,
+			Provider:   o.Provider,
+			Nid:        o.Nid,
+			AppName:    "",
+			Remain:     "",
+			Remu:       "",
+			ActiveTime: o.ActivateTime.String(),
+			LastSettle: "",
+			Probation:  o.Probation,
+			Duration:   o.Duration,
+			Status:     o.Status,
+		}
+		ordersAdaptor = append(ordersAdaptor, adp)
+	}
+
+	return ordersAdaptor, nil
 }
 
 // user's active orders
