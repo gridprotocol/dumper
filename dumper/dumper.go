@@ -116,12 +116,12 @@ func (d *Dumper) DumpGRID() error {
 	defer client.Close()
 
 	// get current chain block number
-	logger.Info("get block number from chain")
 	chainBlock, err := client.BlockNumber(context.Background())
 	if err != nil {
 		logger.Debug("get block number error:", err)
 		return err
 	}
+	logger.Info("get current block number from chain: ", chainBlock)
 
 	// if no new chain block, return
 	if d.fromBlock.Cmp(new(big.Int).SetUint64(chainBlock)) > 0 {
