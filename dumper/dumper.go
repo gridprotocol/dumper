@@ -125,7 +125,7 @@ func (d *Dumper) DumpGRID() error {
 
 	// if no new chain block, return
 	if d.fromBlock.Cmp(new(big.Int).SetUint64(chainBlock)) > 0 {
-		logger.Debug("no new chain block, waiting..")
+		logger.Info("no new chain block, waiting..")
 		return nil
 	}
 
