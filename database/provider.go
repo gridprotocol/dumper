@@ -88,7 +88,7 @@ func GetProviderByAddress(address string) (ProviderAdaptor, error) {
 		return ProviderAdaptor{}, err
 	}
 
-	var nodes_in []NodeAdaptor
+	nodes_in := []NodeAdaptor{}
 	// 适配node到nodeInProvider
 	for _, n := range nodes {
 		// compatible node to node_in

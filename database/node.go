@@ -126,7 +126,7 @@ func ListAllNodesByUser(user string) ([]NodeAdaptor, error) {
 		return nil, err
 	}
 
-	var nodeAdps []NodeAdaptor
+	nodeAdps := []NodeAdaptor{}
 	// 适配node到nodeInProvider
 	for _, n := range nodes {
 		// compatible node to node_in
