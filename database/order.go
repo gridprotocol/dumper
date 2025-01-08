@@ -222,11 +222,9 @@ func SetOrderStatus(oid uint64, st uint64) error {
 
 // check provider orders, if order is end, set status=4
 func CheckProviderOrders(provider string) error {
-	// 计算当前时间
-	now := time.Now()
 
 	// 执行原生 SQL 更新订单状态
-	result := GlobalDataBase.Exec("UPDATE orders SET status=4 WHERE provider= ? AND activate+duration < ?", provider, now)
+	result := GlobalDataBase.Exec("UPDATE orders SET status=4 WHERE provider= ? AND end < ?", provider, time.Now())
 
 	// 检查并返回错误
 	if result.Error != nil {
