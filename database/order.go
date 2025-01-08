@@ -121,6 +121,37 @@ func ListAllOrderByUser(address string) ([]OrderAdaptor, error) {
 	return ordersAdaptor, nil
 }
 
+// provider's orders
+func ListAllOrderByProvider(address string) ([]OrderAdaptor, error) {
+	var orders []Order
+	var ordersAdaptor []OrderAdaptor
+
+	err := GlobalDataBase.Model(&Order{}).Where("provider = ?", address).Find(&orders).Error
+	if err != nil {
+		return nil, err
+	}
+
+	for _, o := range orders {
+		adp := OrderAdaptor{
+			ID:         o.Id,
+			User:       o.User,
+			Provider:   o.Provider,
+			Nid:        o.Nid,
+			AppName:    "",
+			Remain:     "",
+			Remu:       "",
+			ActiveTime: o.ActivateTime.String(),
+			LastSettle: "",
+			Probation:  o.Probation,
+			Duration:   o.Duration,
+			Status:     o.Status,
+		}
+		ordersAdaptor = append(ordersAdaptor, adp)
+	}
+
+	return ordersAdaptor, nil
+}
+
 // user's active orders
 func ListAllActivedOrderByUser(address string) ([]Order, error) {
 	var now = time.Now()
@@ -176,4 +207,31 @@ func CalcOrderFee(id uint64) (*big.Int, error) {
 
 	// return order fee
 	return totalPrice, nil
+}
+
+// set order status
+func SetOrderStatus(oid uint64, st uint64) error {
+	// 更新 node_stores 表中相应节点的 sold 字段
+	err := GlobalDataBase.Model(&Order{}).Where("id = ?", oid).Update("status", st).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// check provider orders, if order is end, set status=4
+func CheckProviderOrders(provider string) error {
+	// 计算当前时间
+	now := time.Now()
+
+	// 执行原生 SQL 更新订单状态
+	result := GlobalDataBase.Exec("UPDATE orders SET status=4 WHERE provider= ? AND activate+duration < ?", provider, now)
+
+	// 检查并返回错误
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
