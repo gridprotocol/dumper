@@ -11,12 +11,13 @@ import (
 )
 
 type CreateOrderEvent struct {
-	Cp  common.Address
-	Id  uint64
-	Nid uint64
-	Act *big.Int
-	Pro *big.Int
-	Dur *big.Int
+	Cp     common.Address
+	Id     uint64
+	Nid    uint64
+	Act    *big.Int
+	Pro    *big.Int
+	Dur    *big.Int
+	Status int64
 }
 
 func (d *Dumper) HandleCreateOrder(log types.Log, from common.Address) error {
@@ -40,6 +41,7 @@ func (d *Dumper) HandleCreateOrder(log types.Log, from common.Address) error {
 		EndTime:      time.Unix(endTime.Int64(), 0),
 		Probation:    out.Pro.Int64(),
 		Duration:     out.Dur.Int64(),
+		Status:       out.Status,
 	}
 
 	logger.Info("store create order..")
