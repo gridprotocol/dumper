@@ -16,7 +16,7 @@ type Order struct {
 	EndTime      time.Time `gorm:"column:end"`
 	Probation    int64
 	Duration     int64
-	Status       int64
+	Status       uint8
 }
 
 func InitOrder() error {
@@ -88,7 +88,7 @@ type OrderAdaptor struct {
 	Probation  int64  `json:"probation"`
 	Duration   int64  `json:"duration"`
 	// 0-not exist 1-unactive 2-active 3-cancelled 4-completed
-	Status int64 `json:"status"`
+	Status uint8 `json:"status"`
 }
 
 // user's orders

@@ -1,6 +1,7 @@
 package dumper
 
 import (
+	"fmt"
 	"math/big"
 	"time"
 
@@ -17,7 +18,7 @@ type CreateOrderEvent struct {
 	Act    *big.Int
 	Pro    *big.Int
 	Dur    *big.Int
-	Status int64
+	Status uint8
 }
 
 func (d *Dumper) HandleCreateOrder(log types.Log, from common.Address) error {
@@ -43,6 +44,8 @@ func (d *Dumper) HandleCreateOrder(log types.Log, from common.Address) error {
 		Duration:     out.Dur.Int64(),
 		Status:       out.Status,
 	}
+
+	fmt.Println("===================== order info:", orderInfo)
 
 	logger.Info("store create order..")
 	err = orderInfo.CreateOrder()

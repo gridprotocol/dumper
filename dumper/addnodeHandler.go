@@ -17,6 +17,7 @@ type AddNodeEvent struct {
 	Cpu struct {
 		CpuPriceMon *big.Int
 		CpuPriceSec *big.Int
+		Core        uint64
 		Model       string
 	}
 
