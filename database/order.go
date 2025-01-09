@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"math/big"
 	"time"
 )
@@ -220,7 +221,7 @@ func SetOrderStatus(oid uint64, st uint64) error {
 	return nil
 }
 
-// check provider orders, if order is end, set status=4
+// check provider orders, if order is end, set status=4, and set node sold=false
 func CheckProviderOrders(provider string) error {
 
 	// 执行原生 SQL 更新订单状态
@@ -229,6 +230,37 @@ func CheckProviderOrders(provider string) error {
 	// 检查并返回错误
 	if result.Error != nil {
 		return result.Error
+	}
+
+	return nil
+}
+
+func UpdateOrderAndNodeStatus(provider string) error {
+	// 获取当前时间
+	now := time.Now()
+
+	// 查询所有 endtime 小于当前时间且 provider 匹配的 Order 记录
+	var orders []Order
+	if err := GlobalDataBase.Model(&Order{}).
+		Where("provider = ? AND end < ?", provider, now).
+		Find(&orders).Error; err != nil {
+		return fmt.Errorf("error fetching orders: %w", err)
+	}
+
+	// 更新这些 Order 记录的 status 为 4
+	if err := GlobalDataBase.Model(&Order{}).
+		Where("provider = ? AND end < ?", provider, now).
+		Update("status", 4).Error; err != nil {
+		return fmt.Errorf("error updating orders: %w", err)
+	}
+
+	// 更新这些 Order 记录对应的 NodeStore 记录的 sold 状态为 false
+	for _, order := range orders {
+		if err := GlobalDataBase.Model(&NodeStore{}).
+			Where("address = ? AND id = ?", order.Provider, order.Nid).
+			Update("sold", false).Error; err != nil {
+			return fmt.Errorf("error updating node: %w", err)
+		}
 	}
 
 	return nil
