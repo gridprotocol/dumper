@@ -25,8 +25,6 @@ func InitOrder() error {
 
 // store order info to db
 func (o *Order) CreateOrder() error {
-	o.StartTime = o.ActivateTime.Add(time.Duration(o.Probation) * time.Second)
-	o.EndTime = o.StartTime.Add(time.Duration(o.Duration) * time.Second)
 	return GlobalDataBase.Create(o).Error
 }
 

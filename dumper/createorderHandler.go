@@ -30,8 +30,8 @@ func (d *Dumper) HandleCreateOrder(log types.Log, from common.Address) error {
 		return err
 	}
 
-	startTime := out.Act.Add(out.Act, out.Pro)
-	endTime := startTime.Add(startTime, out.Dur)
+	startTime := new(big.Int).Add(out.Act, out.Pro)
+	endTime := new(big.Int).Add(startTime, out.Dur)
 	orderInfo := database.Order{
 		User:         from.Hex(),
 		Provider:     out.Cp.Hex(),
