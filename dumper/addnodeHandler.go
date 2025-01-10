@@ -17,8 +17,8 @@ type AddNodeEvent struct {
 	Cpu struct {
 		CpuPriceMon *big.Int
 		CpuPriceSec *big.Int
-		Core        uint64
 		Model       string
+		Core        uint64
 	}
 
 	Gpu struct {
@@ -80,7 +80,7 @@ func (d *Dumper) HandleAddNode(log types.Log) error {
 		Online: false,
 	}
 
-	logger.Info("store AddNode..")
+	logger.Info("============= store AddNode..", nodeInfo)
 	// store data
 	err = nodeInfo.CreateNode()
 	if err != nil {
