@@ -41,7 +41,7 @@ type NodeStore struct {
 	CPUPriceMon string
 	CPUPriceSec string
 	CPUModel    string
-	CPUCore     int64
+	CPUCore     uint64
 
 	GPUPriceMon string
 	GPUPriceSec string
@@ -228,6 +228,7 @@ func NodeToNodeStore(node Node) (NodeStore, error) {
 		CPUPriceMon: node.CPUPriceMon.String(),
 		CPUPriceSec: node.CPUPriceSec.String(),
 		CPUModel:    node.CPUModel,
+		CPUCore:     node.CPUCore,
 
 		GPUPriceMon: node.GPUPriceMon.String(),
 		GPUPriceSec: node.GPUPriceSec.String(),

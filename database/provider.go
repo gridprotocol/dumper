@@ -13,7 +13,7 @@ type CPU struct {
 	PriceMon string `json:"priceMon"`
 	PriceSec string `json:"priceSec"`
 	Model    string `json:"model"`
-	Core     int64  `json:"core"`
+	Core     uint64 `json:"core"`
 }
 type GPU struct {
 	PriceMon string `json:"priceMon"`
