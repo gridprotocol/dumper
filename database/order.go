@@ -81,8 +81,8 @@ type OrderAdaptor struct {
 	AppName    string `json:"appName"`
 	Remain     string `json:"remain"`
 	Remu       string `json:"remuneration"`
-	ActiveTime string `json:"activeTime"`
-	LastSettle string `json:"lastSettleTime"`
+	ActiveTime int64  `json:"activeTime"`
+	LastSettle int64  `json:"lastSettleTime"`
 	Probation  int64  `json:"probation"`
 	Duration   int64  `json:"duration"`
 	// 0-not exist 1-unactive 2-active 3-cancelled 4-completed
@@ -108,8 +108,8 @@ func ListAllOrderByUser(address string) ([]OrderAdaptor, error) {
 			AppName:    "",
 			Remain:     "",
 			Remu:       "",
-			ActiveTime: o.ActivateTime.String(),
-			LastSettle: "",
+			ActiveTime: o.ActivateTime.Unix(),
+			LastSettle: 0,
 			Probation:  o.Probation,
 			Duration:   o.Duration,
 			Status:     o.Status,
@@ -139,8 +139,8 @@ func ListAllOrderByProvider(address string) ([]OrderAdaptor, error) {
 			AppName:    "",
 			Remain:     "",
 			Remu:       "",
-			ActiveTime: o.ActivateTime.String(),
-			LastSettle: "",
+			ActiveTime: o.ActivateTime.Unix(),
+			LastSettle: 0,
 			Probation:  o.Probation,
 			Duration:   o.Duration,
 			Status:     o.Status,
