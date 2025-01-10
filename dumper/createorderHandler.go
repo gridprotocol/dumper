@@ -47,12 +47,15 @@ func (d *Dumper) HandleCreateOrder(log types.Log, from common.Address) error {
 
 	fmt.Println("===================== order info:", orderInfo)
 
-	logger.Info("store create order..")
+	logger.Info("store order..")
 	err = orderInfo.CreateOrder()
 	if err != nil {
 		logger.Debug("store create order error: ", err.Error())
 		return err
 	}
+
+	// set node sold=true
+	database.SetSold(orderInfo.Provider, orderInfo.Nid, true)
 
 	// get node info from db
 	nodeInfo, err := database.GetNodeByCpAndId(orderInfo.Provider, orderInfo.Id)
