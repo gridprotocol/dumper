@@ -64,6 +64,7 @@ func (d *Dumper) HandleAddNode(log types.Log) error {
 		CPUPriceMon: out.Cpu.CpuPriceMon,
 		CPUPriceSec: out.Cpu.CpuPriceSec,
 		CPUModel:    out.Cpu.Model,
+		CPUCore:     out.Cpu.Core,
 
 		GPUPriceMon: out.Gpu.GpuPriceMon,
 		GPUPriceSec: out.Gpu.GpuPriceSec,
