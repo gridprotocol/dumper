@@ -10,17 +10,21 @@ type Node struct {
 	Address string
 	Id      uint64
 
-	CPUPrice *big.Int
-	CPUModel string
-	CPUCore  uint64
+	CPUPriceMon *big.Int
+	CPUPriceSec *big.Int
+	CPUModel    string
+	CPUCore     uint64
 
-	GPUPrice *big.Int
-	GPUModel string
+	GPUPriceMon *big.Int
+	GPUPriceSec *big.Int
+	GPUModel    string
 
-	MemPrice    *big.Int
+	MemPriceMon *big.Int
+	MemPriceSec *big.Int
 	MemCapacity int64
 
-	DiskPrice    *big.Int
+	DiskPriceMon *big.Int
+	DiskPriceSec *big.Int
 	DiskCapacity int64
 
 	Exist bool
@@ -34,17 +38,21 @@ type NodeStore struct {
 	Address string `gorm:"primaryKey"`
 	Id      uint64 `gorm:"primaryKey;autoIncrement:false"`
 
-	CPUPrice string
-	CPUModel string
-	CPUCore  int64
+	CPUPriceMon string
+	CPUPriceSec string
+	CPUModel    string
+	CPUCore     int64
 
-	GPUPrice string
-	GPUModel string
+	GPUPriceMon string
+	GPUPriceSec string
+	GPUModel    string
 
-	MemPrice    string
+	MemPriceMon string
+	MemPriceSec string
 	MemCapacity int64
 
-	DiskPrice    string
+	DiskPriceMon string
+	DiskPriceSec string
 	DiskCapacity int64
 
 	Exist bool
@@ -135,20 +143,24 @@ func ListAllNodesByUser(user string) ([]NodeAdaptor, error) {
 			CP: n.Address,
 
 			CPU: CPU{
-				PriceMon: n.CPUPrice,
+				PriceMon: n.CPUPriceMon,
+				PriceSec: n.CPUPriceSec,
 				Model:    n.CPUModel,
 				Core:     n.CPUCore,
 			},
 			GPU: GPU{
-				PriceMon: n.GPUPrice,
+				PriceMon: n.GPUPriceMon,
+				PriceSec: n.GPUPriceSec,
 				Model:    n.GPUModel,
 			},
 			MEM: MEM{
-				PriceMon: n.MemPrice,
+				PriceMon: n.MemPriceMon,
+				PriceSec: n.MemPriceSec,
 				Num:      n.MemCapacity,
 			},
 			DISK: DISK{
-				PriceMon: n.DiskPrice,
+				PriceMon: n.DiskPriceMon,
+				PriceSec: n.DiskPriceSec,
 				Num:      n.DiskCapacity,
 			},
 
@@ -213,16 +225,20 @@ func NodeToNodeStore(node Node) (NodeStore, error) {
 		Address: node.Address,
 		Id:      node.Id,
 
-		CPUPrice: node.CPUPrice.String(),
-		CPUModel: node.CPUModel,
+		CPUPriceMon: node.CPUPriceMon.String(),
+		CPUPriceSec: node.CPUPriceSec.String(),
+		CPUModel:    node.CPUModel,
 
-		GPUPrice: node.GPUPrice.String(),
-		GPUModel: node.GPUModel,
+		GPUPriceMon: node.GPUPriceMon.String(),
+		GPUPriceSec: node.GPUPriceSec.String(),
+		GPUModel:    node.GPUModel,
 
-		MemPrice:    node.MemPrice.String(),
+		MemPriceMon: node.MemPriceMon.String(),
+		MemPriceSec: node.MemPriceSec.String(),
 		MemCapacity: node.MemCapacity,
 
-		DiskPrice:    node.DiskPrice.String(),
+		DiskPriceMon: node.DiskPriceMon.String(),
+		DiskPriceSec: node.DiskPriceSec.String(),
 		DiskCapacity: node.DiskCapacity,
 
 		Exist: node.Exist,
@@ -232,40 +248,64 @@ func NodeToNodeStore(node Node) (NodeStore, error) {
 }
 
 func NodeStoreToNode(node NodeStore) (Node, error) {
-	cpuPrice, ok := new(big.Int).SetString(node.CPUPrice, 10)
+	cpuPriceMon, ok := new(big.Int).SetString(node.CPUPriceMon, 10)
 	if !ok {
-		return Node{}, xerrors.Errorf("Failed to convert %s to BigInt", node.CPUPrice)
+		return Node{}, xerrors.Errorf("Failed to convert %s to BigInt", node.CPUPriceMon)
 	}
 
-	gpuPrice, ok := new(big.Int).SetString(node.GPUPrice, 10)
+	cpuPriceSec, ok := new(big.Int).SetString(node.CPUPriceSec, 10)
 	if !ok {
-		return Node{}, xerrors.Errorf("Failed to convert %s to BigInt", node.GPUPrice)
+		return Node{}, xerrors.Errorf("Failed to convert %s to BigInt", node.CPUPriceSec)
 	}
 
-	memPrice, ok := new(big.Int).SetString(node.MemPrice, 10)
+	gpuPriceMon, ok := new(big.Int).SetString(node.GPUPriceMon, 10)
 	if !ok {
-		return Node{}, xerrors.Errorf("Failed to convert %s to BigInt", node.MemPrice)
+		return Node{}, xerrors.Errorf("Failed to convert %s to BigInt", node.GPUPriceMon)
 	}
 
-	diskPrice, ok := new(big.Int).SetString(node.DiskPrice, 10)
+	gpuPriceSec, ok := new(big.Int).SetString(node.GPUPriceSec, 10)
 	if !ok {
-		return Node{}, xerrors.Errorf("Failed to convert %s to BigInt", node.DiskPrice)
+		return Node{}, xerrors.Errorf("Failed to convert %s to BigInt", node.GPUPriceMon)
+	}
+
+	memPriceMon, ok := new(big.Int).SetString(node.MemPriceMon, 10)
+	if !ok {
+		return Node{}, xerrors.Errorf("Failed to convert %s to BigInt", node.MemPriceMon)
+	}
+
+	memPriceSec, ok := new(big.Int).SetString(node.MemPriceSec, 10)
+	if !ok {
+		return Node{}, xerrors.Errorf("Failed to convert %s to BigInt", node.MemPriceSec)
+	}
+
+	diskPriceMon, ok := new(big.Int).SetString(node.DiskPriceMon, 10)
+	if !ok {
+		return Node{}, xerrors.Errorf("Failed to convert %s to BigInt", node.DiskPriceMon)
+	}
+
+	diskPriceSec, ok := new(big.Int).SetString(node.DiskPriceSec, 10)
+	if !ok {
+		return Node{}, xerrors.Errorf("Failed to convert %s to BigInt", node.DiskPriceSec)
 	}
 
 	return Node{
 		Address: node.Address,
 		Id:      node.Id,
 
-		CPUPrice: cpuPrice,
-		CPUModel: node.CPUModel,
+		CPUPriceMon: cpuPriceMon,
+		CPUPriceSec: cpuPriceSec,
+		CPUModel:    node.CPUModel,
 
-		GPUPrice: gpuPrice,
-		GPUModel: node.GPUModel,
+		GPUPriceMon: gpuPriceMon,
+		GPUPriceSec: gpuPriceSec,
+		GPUModel:    node.GPUModel,
 
-		MemPrice:    memPrice,
+		MemPriceMon: memPriceMon,
+		MemPriceSec: memPriceSec,
 		MemCapacity: node.MemCapacity,
 
-		DiskPrice:    diskPrice,
+		DiskPriceMon: diskPriceMon,
+		DiskPriceSec: diskPriceSec,
 		DiskCapacity: node.DiskCapacity,
 	}, nil
 }

@@ -198,10 +198,10 @@ func CalcOrderFee(id uint64) (*big.Int, error) {
 	logger.Debug("node: ", node)
 
 	// calc order fee
-	memFeeSec := new(big.Int).Mul(new(big.Int).SetInt64(node.MemCapacity), node.MemPrice)
-	diskFeeSec := new(big.Int).Mul(new(big.Int).SetInt64(node.DiskCapacity), node.DiskPrice)
+	memFeeSec := new(big.Int).Mul(new(big.Int).SetInt64(node.MemCapacity), node.MemPriceSec)
+	diskFeeSec := new(big.Int).Mul(new(big.Int).SetInt64(node.DiskCapacity), node.DiskPriceSec)
 
-	totalPrice := new(big.Int).Add(node.CPUPrice, node.GPUPrice)
+	totalPrice := new(big.Int).Add(node.CPUPriceSec, node.GPUPriceSec)
 	totalPrice.Add(totalPrice, memFeeSec)
 	totalPrice.Add(totalPrice, diskFeeSec)
 	totalPrice.Mul(totalPrice, new(big.Int).SetInt64(order.Duration))

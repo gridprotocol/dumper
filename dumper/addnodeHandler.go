@@ -61,16 +61,20 @@ func (d *Dumper) HandleAddNode(log types.Log) error {
 		Address: out.Cp.Hex(),
 		Id:      out.Id,
 
-		CPUPrice: out.Cpu.CpuPriceSec,
-		CPUModel: out.Cpu.Model,
+		CPUPriceMon: out.Cpu.CpuPriceMon,
+		CPUPriceSec: out.Cpu.CpuPriceSec,
+		CPUModel:    out.Cpu.Model,
 
-		GPUPrice: out.Gpu.GpuPriceSec,
-		GPUModel: out.Gpu.Model,
+		GPUPriceMon: out.Gpu.GpuPriceMon,
+		GPUPriceSec: out.Gpu.GpuPriceSec,
+		GPUModel:    out.Gpu.Model,
 
-		MemPrice:    out.Mem.MemPriceSec,
+		MemPriceMon: out.Mem.MemPriceMon,
+		MemPriceSec: out.Mem.MemPriceSec,
 		MemCapacity: int64(out.Mem.Num),
 
-		DiskPrice:    out.Disk.DiskPriceSec,
+		DiskPriceMon: out.Disk.DiskPriceMon,
+		DiskPriceSec: out.Disk.DiskPriceSec,
 		DiskCapacity: int64(out.Disk.Num),
 
 		Exist: out.Exist,

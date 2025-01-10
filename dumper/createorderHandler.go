@@ -71,9 +71,9 @@ func (d *Dumper) HandleCreateOrder(log types.Log, from common.Address) error {
 
 	// init profit info
 	// (cpuPrice + gpuPrice + memPrice + diskPrice) * duration
-	price := new(big.Int).Add(nodeInfo.CPUPrice, nodeInfo.GPUPrice)
-	price.Add(price, nodeInfo.MemPrice)
-	price.Add(price, nodeInfo.DiskPrice)
+	price := new(big.Int).Add(nodeInfo.CPUPriceSec, nodeInfo.GPUPriceSec)
+	price.Add(price, nodeInfo.MemPriceSec)
+	price.Add(price, nodeInfo.DiskPriceSec)
 	price.Mul(price, big.NewInt(orderInfo.Duration))
 
 	// update profit

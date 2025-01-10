@@ -97,20 +97,24 @@ func GetProviderByAddress(address string) (ProviderAdaptor, error) {
 			CP: n.Address,
 
 			CPU: CPU{
-				PriceMon: n.CPUPrice,
+				PriceMon: n.CPUPriceMon,
+				PriceSec: n.CPUPriceSec,
 				Model:    n.CPUModel,
 				Core:     n.CPUCore,
 			},
 			GPU: GPU{
-				PriceMon: n.GPUPrice,
+				PriceMon: n.GPUPriceMon,
+				PriceSec: n.GPUPriceSec,
 				Model:    n.GPUModel,
 			},
 			MEM: MEM{
-				PriceMon: n.MemPrice,
+				PriceMon: n.MemPriceMon,
+				PriceSec: n.MemPriceSec,
 				Num:      n.MemCapacity,
 			},
 			DISK: DISK{
-				PriceMon: n.DiskPrice,
+				PriceMon: n.DiskPriceMon,
+				PriceSec: n.DiskPriceSec,
 				Num:      n.DiskCapacity,
 			},
 
@@ -173,20 +177,24 @@ func ListAllProviders(start int, num int) ([]ProviderAdaptor, error) {
 				CP: n.Address,
 
 				CPU: CPU{
-					PriceMon: n.CPUPrice,
+					PriceMon: n.CPUPriceMon,
+					PriceSec: n.CPUPriceSec,
 					Model:    n.CPUModel,
 					Core:     n.CPUCore,
 				},
 				GPU: GPU{
-					PriceMon: n.GPUPrice,
+					PriceMon: n.GPUPriceMon,
+					PriceSec: n.GPUPriceSec,
 					Model:    n.GPUModel,
 				},
 				MEM: MEM{
-					PriceMon: n.MemPrice,
+					PriceMon: n.MemPriceMon,
+					PriceSec: n.MemPriceSec,
 					Num:      n.MemCapacity,
 				},
 				DISK: DISK{
-					PriceMon: n.DiskPrice,
+					PriceMon: n.DiskPriceMon,
+					PriceSec: n.DiskPriceSec,
 					Num:      n.DiskCapacity,
 				},
 
