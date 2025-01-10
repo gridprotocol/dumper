@@ -44,6 +44,11 @@ type AddNodeEvent struct {
 	Avail bool
 }
 
+type DelNodeEvent struct {
+	Cp common.Address
+	ID uint64
+}
+
 // unpack log data and store into db
 func (d *Dumper) HandleAddNode(log types.Log) error {
 	var out AddNodeEvent
@@ -90,6 +95,31 @@ func (d *Dumper) HandleAddNode(log types.Log) error {
 	err = nodeInfo.CreateNode()
 	if err != nil {
 		logger.Debug("store AddNode error: ", err.Error())
+		return err
+	}
+
+	// // test set online
+	// database.SetOnline(nodeInfo.Address, nodeInfo.Id, true)
+
+	return nil
+}
+
+func (d *Dumper) HandleDelNode(log types.Log) error {
+	var out DelNodeEvent
+
+	// abi0 = registry
+	err := d.unpack(log, d.contractABI[0], &out)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("out: ", out)
+
+	logger.Info("============= Handle DelNode..", out)
+	// store data
+	err = database.SetExist(out.Cp.String(), out.ID, false)
+	if err != nil {
+		logger.Debug("Handle delNode error: ", err.Error())
 		return err
 	}
 

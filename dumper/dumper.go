@@ -165,6 +165,12 @@ func (d *Dumper) DumpGRID() error {
 			if err != nil {
 				logger.Debug("handle addNode error: ", err.Error())
 			}
+		case "DelNode":
+			logger.Debug("==== Handle Delete Node Event")
+			err = d.HandleDelNode(event)
+			if err != nil {
+				logger.Debug("handle delNode error: ", err.Error())
+			}
 		case "CreateOrder":
 			logger.Debug("==== Handle Create Order Event")
 			tx, _, err := client.TransactionByHash(context.TODO(), event.TxHash)
