@@ -17,6 +17,7 @@ type Order struct {
 	Probation    int64
 	Duration     int64
 	Status       uint8
+	AppName      string
 }
 
 func InitOrder() error {
