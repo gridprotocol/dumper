@@ -308,5 +308,11 @@ func NodeStoreToNode(node NodeStore) (Node, error) {
 		DiskPriceMon: diskPriceMon,
 		DiskPriceSec: diskPriceSec,
 		DiskCapacity: node.DiskCapacity,
+
+		Exist: node.Exist,
+		Sold:  node.Sold,
+		Avail: node.Avail,
+
+		Online: node.Online,
 	}, nil
 }
