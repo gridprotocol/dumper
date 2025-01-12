@@ -211,8 +211,17 @@ func CalcOrderFee(id uint64) (*big.Int, error) {
 
 // set order status
 func SetOrderStatus(oid uint64, st uint64) error {
-	// 更新 node_stores 表中相应节点的 sold 字段
 	err := GlobalDataBase.Model(&Order{}).Where("id = ?", oid).Update("status", st).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// set order appname
+func SetOrderAppName(oid uint64, app string) error {
+	err := GlobalDataBase.Model(&Order{}).Where("id = ?", oid).Update("app_name", app).Error
 	if err != nil {
 		return err
 	}
