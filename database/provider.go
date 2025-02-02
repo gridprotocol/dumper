@@ -42,6 +42,8 @@ type NodeAdaptor struct {
 	Sold   bool `json:"sold"`
 	Avail  bool `json:"avail"`
 	Online bool `json:"online"`
+
+	AppName string `json:"appname"`
 }
 
 type ProviderAdaptor struct {

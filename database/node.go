@@ -124,6 +124,7 @@ func ListAllNodesByUser(user string) ([]NodeAdaptor, error) {
 	// 然后根据 orders 表中的 provider 和 nid 查询 node_stores 表中的节点信息
 	var providers []string
 	var nids []int
+
 	for _, order := range orders {
 		providers = append(providers, order.Provider)
 		nids = append(nids, int(order.Nid))
@@ -169,6 +170,14 @@ func ListAllNodesByUser(user string) ([]NodeAdaptor, error) {
 			Avail:  n.Avail,
 			Online: n.Online,
 		}
+
+		// get order's appname with provider and nid
+		var order Order
+		result := GlobalDataBase.Where("provider = ? AND nid = ?", node.CP, node.ID).First(&order)
+		if result.Error != nil {
+			return nil, result.Error
+		}
+		node.AppName = order.AppName
 
 		nodeAdps = append(nodeAdps, node)
 	}
